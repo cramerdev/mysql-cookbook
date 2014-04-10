@@ -17,7 +17,12 @@
 # limitations under the License.
 #
 
-default['mysql']['bind_address']               = attribute?('cloud') ? node['cloud']['local_ipv4'] : node['ipaddress']
+if node['cloud'] && Array(node['cloud']['local_ipv4']).any?
+  default['mysql']['bind_address']               = Array(node['cloud']['local_ipv4']).first
+else
+  default['mysql']['bind_address']               = node['ipaddress']
+end
+
 default['mysql']['data_dir']                   = "/var/lib/mysql"
 
 case node["platform"]
